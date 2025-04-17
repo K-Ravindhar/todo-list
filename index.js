@@ -1,5 +1,4 @@
-
-let parent = document.getElementById('listItems');
+let parent = document.getElementById('listItemsContainer');
 
 let count = 0;
 
@@ -9,6 +8,7 @@ document.getElementById('add').addEventListener('click',function(){
     let inputText = document.getElementById('inputText').value;
     let section = document.createElement('section');
     section.classList.add('listItems');
+    section.dataset.number = count;
 
     let p = document.createElement('p');
     p.textContent = inputText;
@@ -30,13 +30,13 @@ document.getElementById('add').addEventListener('click',function(){
 
     let save = document.createElement('button');
     save.textContent = "save";
-    save.classList.add('edit');
+    save.classList.add('save');
     save.classList.add('button');
     save.classList.add('hidden');
     save.dataset.number = count;
 
     let deleted = document.createElement('button');
-    deleted.textContent = "deleted";
+    deleted.textContent = "delete";
     deleted.classList.add('button');
     deleted.classList.add('delete');
     deleted.dataset.number = count;
@@ -48,39 +48,43 @@ document.getElementById('add').addEventListener('click',function(){
     section.appendChild(deleted);
     parent.appendChild(section);
     console.log(section);
+    document.getElementById('inputText').value = '';
 
     count++;
 })
 
 
-
-document.querySelector('#listItems').addEventListener('click',function(event){
+document.querySelector('#listItemsContainer').addEventListener('click',function(event){
     let listItemIndex = event.target.dataset.number;
-    document.querySelector(`[data-number = '${listItemIndex}']`).classList.add('hidden');
+    let section = document.querySelector(`section[data-number = '${listItemIndex}']`);
+     
+    console.log(section)
+    if(event.target.classList.contains("edit")){
+        let p = section.querySelector('p');
+        let input = section.querySelector('input');
+        let edit = section.querySelector('.button.edit');
+        let save = section.querySelector('.button.save');
+        
+        p.classList.add('hidden');
+        input.classList.remove('hidden');
+        edit.classList.add('hidden');
+        save.classList.remove('hidden');
+    }
+    if(event.target.classList.contains('save')){
+        let p = section.querySelector('p');
+        let input = section.querySelector('input');
+        let edit = section.querySelector('.button.edit');
+        let save = section.querySelector('.button.save');
 
-    let inputChild = document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.value;
-    console.log(inputChild);
-    document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.classList.remove('hidden');
-    document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.nextSibling.classList.add('hidden');
-    // console.log(document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.nextSibling);
-    let a = document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.nextSibling.nextSibling.classList.remove('hidden');
-    
-    let save = document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.nextSibling.nextSibling; 
-    let deleted  = document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.nextSibling.nextSibling.nextSibling;
+        let value = input.value;
 
-    // console.log(save);
-    save.addEventListener('click',function(){
-        inputChild = document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.value;
-        document.querySelector(`[data-number = '${listItemIndex}']`).innerHTML = inputChild;
-        document.querySelector(`[data-number = '${listItemIndex}']`).classList.remove('hidden');
-        document.querySelector(`[data-number = '${listItemIndex}']`).nextSibling.classList.add('hidden');   
-    });
-
-    // let deletes = document.querySelectorAll(`[data-number = '${listItemIndex}']`).classList.add('hidden');
-    // deleted.addEventListener('click',function(deletes){
-    //     document.querySelector('#listItems').forEach(element => {
-    //         element.remove(element);    
-    //     });
-    // })
-
-});
+        p.textContent = value;
+        p.classList.remove('hidden');
+        input.classList.add('hidden');
+        save.classList.add('hidden');
+        edit.classList.remove('hidden');
+    }
+    if(event.target.classList.contains('delete')){
+        section.remove();
+    }
+})
